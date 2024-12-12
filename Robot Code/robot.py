@@ -18,6 +18,7 @@ kLB = 5 #LB Button
 kRB = 6 #RB Button
 kBack = 7 #Back Button
 kStart = 8 #Start Button
+kRT = 9 #Right Trigger Button
 
 class MyRobot(wpilib.TimedRobot):
     """Main robot class"""
@@ -25,11 +26,13 @@ class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         """Robot-wide initialization code should go here"""
 
-                                # Auto 0 : None
-        self.preferredAuto = 4  # Auto 1 : Drive forward
-                                # Auto 2 : Center speaker
-                                # Auto 3 : Side speaker
-                                # Auto 4 : Amp
+#original code (tank drive)
+
+                                 #Auto 0 : None
+        self.preferredAuto = 4   #Auto 1 : Drive forward
+                                 #Auto 2 : Center speaker
+                                 #Auto 3 : Side speaker
+                                 #Auto 4 : Amp
 
         self.joystick = wpilib.XboxController(0)
 
@@ -44,6 +47,7 @@ class MyRobot(wpilib.TimedRobot):
         l_motor.setInverted(True)
 
         self.drive = wpilib.drive.DifferentialDrive(l_motor, r_motor)
+#end of original code (tank drive)
 
         #self.climber_motor = wpilib.PWMSparkMax(7, wpilib.CANSparkLowLevel.MotorType.kBrushless)
         #self.claw_motor = wpilib.PWMSparkMax(8, wpilib.CANSparkLowLevel.MotorType.kBrushed)
@@ -173,30 +177,41 @@ class MyRobot(wpilib.TimedRobot):
         """Called when operation control mode is enabled"""
          #TEST THIS LATER (MOVEMENT ADJUSTMENTS)
         #drive motors
-        RightY = self.joystick.getRightY()
-        LeftY = self.joystick.getLeftY()
+        rightTrigger = self.joystick.getRightTriggerAxis()    #New (test) code
+        #RightY = self.joystick.getRightY()    #original code
+        LeftX = self.joystick.getLeftX()
+        leftTrigger = self.joystick.getLeftTriggerAxis()
         # print(f"RightY: {RightY} - LeftY: {LeftY}")
 
         #exponential movement
-        if(RightY < 0):
-            RightY = (RightY**4)*-1
+        if(leftTrigger < 0):
+            leftTrigger = (leftTrigger**4)*-1
         else:
-            RightY = (RightY**4)
+            leftTrigger = (leftTrigger**4)
         
-        if(LeftY < 0):
-            LeftY = (LeftY**4)*-1
+        if(rightTrigger > 0):
+            rightTrigger = (rightTrigger**-4)*-1
         else:
-            LeftY = (LeftY**4)
-        RightY = RightY *.9        
-        LeftY = LeftY *.9        
-        #this makes it turn slower
-        if((RightY < 0.1 and RightY > -0.1) and (LeftY >= 0.5 or LeftY <= -0.5)):
-            LeftY = LeftY * 0.66
-        elif((LeftY < 0.1 and LeftY > -0.1) and (RightY >= 0.5 or RightY <=-0.5)):
-            RightY = RightY * 0.66
-        print(f"RightY: {RightY} - LeftY: {LeftY}")
+            rightTrigger = (rightTrigger**4)
+   
+        if(LeftX < 0):
+            LeftX = (LeftX**4)*-1
+        else:
+            LeftX = (LeftX**4)
 
-        self.drive.tankDrive(RightY, LeftY)
+        rightTrigger = rightTrigger *.9        
+        leftTrigger = leftTrigger *.9  
+        LeftX = LeftX *.9     
+        #this makes it turn slower
+        if((rightTrigger < 0.1 and rightTrigger > -0.1) and (LeftX >= 0.5 or LeftX <= -0.5)):
+            LeftX = LeftX * 0.66
+        elif((LeftX < 0.1 and LeftX > -0.1) and (rightTrigger >= 0.5 or rightTrigger <=-0.5)):
+            rightTrigger = rightTrigger * 0.66
+        print(f"rightTrigger: {rightTrigger} - LeftX: {LeftX}")
+
+        self.drive.arcadeDrive(rightTrigger, LeftX, leftTrigger) # new arcade input
+
+       # self.drive.tankDrive(RightY, LeftY)                #original tank drive input
         
         '''
         # LAUNCHER WHEEL CONTROL
