@@ -36,10 +36,10 @@ class MyRobot(wpilib.TimedRobot):
 
         self.joystick = wpilib.XboxController(0)
 
-        self.lf_motor = wpilib.PWMSparkMax(4) 
-        self.lr_motor = wpilib.PWMSparkMax(3) 
-        self.rf_motor = wpilib.PWMSparkMax(9)
-        self.rr_motor = wpilib.PWMSparkMax(2)
+        self.lf_motor = rev.CANSparkMax(4, rev.CANSparkLowLevel.MotorType.kBrushed) 
+        self.lr_motor = rev.CANSparkMax(3, rev.CANSparkLowLevel.MotorType.kBrushed)
+        self.rf_motor = rev.CANSparkMax(9, rev.CANSparkLowLevel.MotorType.kBrushed)
+        self.rr_motor = rev.CANSparkMax(2, rev.CANSparkLowLevel.MotorType.kBrushed)
 
         l_motor = wpilib.MotorControllerGroup(self.lf_motor, self.lr_motor)
         r_motor = wpilib.MotorControllerGroup(self.rf_motor, self.rr_motor)
