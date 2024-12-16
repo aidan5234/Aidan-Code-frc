@@ -184,22 +184,27 @@ class MyRobot(wpilib.TimedRobot):
         # print(f"RightY: {RightY} - LeftY: {LeftY}")
 
         #exponential movement
-        if(leftTrigger < 0):
-            leftTrigger = (leftTrigger**4)*-1
-        else:
-            leftTrigger = (leftTrigger**4)
-        
         if(rightTrigger > 0):
             rightTrigger = (rightTrigger**-4)*-1
         else:
             rightTrigger = (rightTrigger**4)
-   
+
+        if(leftTrigger > 0):
+            rightTrigger = (rightTrigger**0)
+        else:
+            rightTrigger = (rightTrigger**4)*-1
+
+        if(rightTrigger == 0):
+            leftTrigger = (leftTrigger**4)*-1
+        else:
+            leftTrigger = (leftTrigger**4)*1
+        
         if(LeftX < 0):
             LeftX = (LeftX**4)*-1
         else:
             LeftX = (LeftX**4)
 
-        rightTrigger = rightTrigger *.9        
+        rightTrigger = rightTrigger *1.5        
         leftTrigger = leftTrigger *.9  
         LeftX = LeftX *.9     
         #this makes it turn slower
@@ -208,6 +213,12 @@ class MyRobot(wpilib.TimedRobot):
         elif((LeftX < 0.1 and LeftX > -0.1) and (rightTrigger >= 0.5 or rightTrigger <=-0.5)):
             rightTrigger = rightTrigger * 0.66
         print(f"rightTrigger: {rightTrigger} - LeftX: {LeftX}")
+
+        if((leftTrigger < 0.1 and leftTrigger > -0.1) and (LeftX >= 0.5 or LeftX <= -0.5)):
+            LeftX = LeftX * 0.66
+        elif((LeftX < 0.1 and LeftX > -0.1) and (leftTrigger >= 0.5 or leftTrigger <=-0.5)):
+            leftTrigger = leftTrigger * 0.66
+        print(f"leftTrigger: {leftTrigger} - LeftX: {LeftX}")
 
         self.drive.arcadeDrive(rightTrigger, LeftX, leftTrigger) # new arcade input
 
